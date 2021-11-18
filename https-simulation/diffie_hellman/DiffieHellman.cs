@@ -39,6 +39,19 @@ namespace https_simulation.diffie_hellman
         }
 
         /// <summary>
+        /// Calculates the "V" value
+        /// </summary>
+        /// <param name="hexB">String hex representation of "B"</param>
+        /// <param name="a">BigInteger "a"</param>
+        /// <returns><strong>BigInteger "V" value</strong></returns>
+        public static BigInteger Calculate_V(string hexB, BigInteger a)
+        {
+            BigInteger B = BigInteger.Parse(hexB);
+            BigInteger numericRepP = HexDigitsToNumberStr(_pStr);
+            return BigInteger.ModPow(B, a, numericRepP);
+        }
+
+        /// <summary>
         /// Converts a space separated string of hex numbers into a BigInteger representation
         /// </summary>
         /// <param name="hexDigits">String of hex numbers separated by spaces</param>
