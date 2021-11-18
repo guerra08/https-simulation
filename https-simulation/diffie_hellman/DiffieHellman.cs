@@ -39,9 +39,8 @@ namespace https_simulation.diffie_hellman
         /// <param name="hexB">String hex representation of "B"</param>
         /// <param name="a">BigInteger "a"</param>
         /// <returns><strong>BigInteger "V" value</strong></returns>
-        public static BigInteger Calculate_V(string hexB, BigInteger a)
+        public static BigInteger Calculate_V(BigInteger B, BigInteger a)
         {
-            BigInteger B = BigInteger.Parse(hexB);
             BigInteger numericRepP = HexDigitsToNumberStr(_pStr);
             return BigInteger.ModPow(B, a, numericRepP);
         }
