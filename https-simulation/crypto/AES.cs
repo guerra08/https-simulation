@@ -1,5 +1,4 @@
-﻿using System;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using https_simulation.util;
 
 namespace https_simulation.crypto
@@ -34,6 +33,11 @@ namespace https_simulation.crypto
                 decryptedBytes = msDecrypt.ToArray();
             }
             return decryptedBytes;
+        }
+
+        public static byte[] CryptPlainTextWithAES(string plainText, string hexKey)
+        {
+            return null;
         }
 
     }
