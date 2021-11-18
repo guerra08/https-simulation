@@ -27,7 +27,7 @@ namespace https_simulation.crypto
                 aes.Key = keyBytes;
                 aes.IV = IV;
                 ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-                using MemoryStream msDecrypt = new(dataBytes);
+                using MemoryStream msDecrypt = new();
                 using (CryptoStream csDecrypt = new(msDecrypt, decryptor, CryptoStreamMode.Write))
                 {
                     csDecrypt.Write(dataBytes, 0, dataBytes.Length);
@@ -46,7 +46,6 @@ namespace https_simulation.crypto
         public static byte[] EncryptPlainTextWithAES(string plainText, string hexKey)
         {
             byte[] encryptedBytes = null;
-            byte[] messageBytes = Encoding.ASCII.GetBytes(plainText);
             byte[] keyBytes = Conversor.HexStringToByteArray(hexKey);
             byte[] IV = Generator.GenerateByteArray();
             using (Aes aes = Aes.Create())

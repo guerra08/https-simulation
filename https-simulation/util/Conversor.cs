@@ -15,14 +15,10 @@ namespace https_simulation.util
         /// <returns><strong>byte array</strong></returns>
         public static byte[] HexStringToByteArray(string input)
         {
-            var outputLength = input.Length / 2;
-            var output = new byte[outputLength];
-            using (var sr = new StringReader(input))
-            {
-                for (var i = 0; i < outputLength; i++)
-                    output[i] = Convert.ToByte(new string(new char[2] { (char)sr.Read(), (char)sr.Read() }), 16);
-            }
-            return output;
+            return Enumerable
+                .Range(0, input.Length / 2)
+                .Select(x => Convert.ToByte(input.Substring(x * 2, 2), 16))
+                .ToArray();
         }
 
     }
