@@ -7,6 +7,9 @@ using System.Numerics;
 
 namespace https_simulation.diffie_hellman
 {
+    /// <summary>
+    /// DiffieHellman methods implementations
+    /// </summary>
     internal class DiffieHellman
     {
 
@@ -15,14 +18,23 @@ namespace https_simulation.diffie_hellman
         private const int _aSize = 45;
 
         /// <summary>
+        /// Generates "a" number using Diffie Hellman
+        /// </summary>
+        /// <returns><strong>BigInteger "a" value</strong></returns>
+        public static BigInteger Generate_a()
+        {
+            return GenerateBigIntegerSmallerThan(_aSize);
+        }
+
+        /// <summary>
         /// Generates "A" number using Diffie Hellman
         /// </summary>
+        /// <param name="a">BigInteger "a" value</param>
         /// <returns><strong>BigInteger "A" value</strong></returns>
-        public static BigInteger Generate_A()
+        public static BigInteger Generate_A(BigInteger a)
         {
             BigInteger numericRepP = HexDigitsToNumberStr(_pStr);
             BigInteger numericRepG = HexDigitsToNumberStr(_gStr);
-            BigInteger a = GenerateBigIntegerSmallerThan(_aSize);
             return BigInteger.ModPow(numericRepG, a, numericRepP);
         }
 
