@@ -1,37 +1,44 @@
 ﻿using System.Numerics;
 
 using https_simulation.diffie_hellman;
+using https_simulation.crypto;
 
 class Program
 {
     static void Main(string[] args)
     {
         Console.WriteLine("HTTPS Simulation - Bruno Guerra");
-        if (args.Length == 0) return;
+        if (args.Length == 0)
+        {
+            PrintOptions();
+            return;
+        }
         string mode = args[0];
         switch (mode)
         {
             case "0":
-                WrapperGenerateA();
+                GenerateAWrapper();
                 break;
             case "1":
-                WrapperCalculateV();
+                CalculateVWrapper();
+                break;
+            case "2":
+                CalculateSWrapper();
                 break;
             default:
                 Console.WriteLine("Invalid option.");
+                PrintOptions();
                 break;
         }
-
-        
     }
 
-    private static void WrapperCalculateV()
+    private static void CalculateVWrapper()
     {
         try
         {
             Console.WriteLine("Input the hex value of 'B': ");
             BigInteger B = BigInteger.Parse(Console.ReadLine(), System.Globalization.NumberStyles.HexNumber);
-            Console.WriteLine("Input the value of 'a': ");
+            Console.WriteLine("Input the hex value of 'a': ");
             BigInteger a = BigInteger.Parse(Console.ReadLine(), System.Globalization.NumberStyles.HexNumber);
             BigInteger V = DiffieHellman.Calculate_V(B, a);
             Console.WriteLine("'V' value: ");
@@ -44,7 +51,7 @@ class Program
         
     }
 
-    private static void WrapperGenerateA()
+    private static void GenerateAWrapper()
     {
         BigInteger a = DiffieHellman.Generate_a();
         Console.WriteLine("Hex representation of 'a'");
@@ -53,6 +60,22 @@ class Program
         BigInteger A = DiffieHellman.Generate_A(a);
         Console.WriteLine("Hex representation of 'A'");
         Console.WriteLine(A.ToString("X"));
+    }
+
+    private static void CalculateSWrapper()
+    {
+        Console.WriteLine("Input the BigInteger 'V' value: ");
+        BigInteger V = BigInteger.Parse(Console.ReadLine());
+        byte[] result = SHA.CalculateS(V);
+        Console.WriteLine(String.Join("", result));
+    }
+
+    private static void PrintOptions()
+    {
+        Console.WriteLine("Use one of the following number as argument to execute an action: ");
+        Console.WriteLine("0 - Generate 'A' value");
+        Console.WriteLine("1 - Calculate 'V' value");
+        Console.WriteLine("2 - Calculate 'S' value");
     }
 
 }
