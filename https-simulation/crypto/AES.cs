@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using System.Text;
 using https_simulation.util;
 
 namespace https_simulation.crypto
@@ -35,9 +36,26 @@ namespace https_simulation.crypto
             return decryptedBytes;
         }
 
-        public static byte[] CryptPlainTextWithAES(string plainText, string hexKey)
+        public static byte[] EncryptPlainTextWithAES(string plainText, string hexKey)
         {
-            return null;
+            byte[] encryptedBytes = null;
+            byte[] messageBytes = Encoding.ASCII.GetBytes(plainText);
+            byte[] keyBytes = Conversor.HexStringToByteArray(hexKey);
+            byte[] IV = Generator.GenerateByteArray();
+            using (Aes aes = Aes.Create())
+            {
+                aes.Mode = CipherMode.CBC;
+                aes.Key = keyBytes;
+                aes.IV = IV;
+                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+                using MemoryStream msEncrypt = new(messageBytes);
+                using (CryptoStream csEncrypt = new(msEncrypt, encryptor, CryptoStreamMode.Write))
+                {
+                    csEncrypt.Write(messageBytes, 0, messageBytes.Length);
+                }
+                encryptedBytes = msEncrypt.ToArray();
+            }
+            return encryptedBytes;
         }
 
     }

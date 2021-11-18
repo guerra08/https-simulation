@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using System.Globalization;
+using https_simulation.util;
 
 namespace https_simulation.diffie_hellman
 {
@@ -19,7 +20,7 @@ namespace https_simulation.diffie_hellman
         /// <returns><strong>BigInteger "a" value</strong></returns>
         public static BigInteger Generate_a()
         {
-            return GenerateBigIntegerSmallerThan(_aSize);
+            return Generator.GenerateBigIntegerSmallerThan(_aSize);
         }
 
         /// <summary>
@@ -44,19 +45,6 @@ namespace https_simulation.diffie_hellman
         {
             BigInteger P = BigInteger.Parse(_pStr, NumberStyles.AllowHexSpecifier);
             return BigInteger.ModPow(B, a, P);
-        }
-
-        /// <summary>
-        /// Generates a BigInteger with a length smaller than a given int number
-        /// </summary>
-        /// <param name="max">Int max length</param>
-        /// <returns><strong>BigInteger generated number</strong></returns>
-        private static BigInteger GenerateBigIntegerSmallerThan(int max)
-        {
-            Random random = new Random();
-            byte[] data = new byte[max];
-            random.NextBytes(data);
-            return new BigInteger(data, true);
         }
     }
 }
