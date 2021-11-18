@@ -25,6 +25,9 @@ class Program
             case "2":
                 CalculateSWrapper();
                 break;
+            case "3":
+                DecryptWithAESWrapper();
+                break;
             default:
                 Console.WriteLine("Invalid option.");
                 PrintOptions();
@@ -55,11 +58,11 @@ class Program
     {
         BigInteger a = DiffieHellman.Generate_a();
         Console.WriteLine("Hex representation of 'a'");
-        Console.WriteLine(a.ToString("X"));
+        Console.WriteLine(a.ToString("X2"));
 
         BigInteger A = DiffieHellman.Generate_A(a);
         Console.WriteLine("Hex representation of 'A'");
-        Console.WriteLine(A.ToString("X"));
+        Console.WriteLine(A.ToString("X2"));
     }
 
     private static void CalculateSWrapper()
@@ -68,7 +71,18 @@ class Program
         BigInteger V = BigInteger.Parse(Console.ReadLine());
         byte[] result = SHA.CalculateS(V);
         Console.WriteLine("Hex representation of S (16 bytes): ");
-        Console.WriteLine(String.Join("", result.Select(item => item.ToString("X")).ToArray()));
+        Console.WriteLine(String.Join("", result.Select(item => item.ToString("X2")).ToArray()));
+    }
+
+    private static void DecryptWithAESWrapper()
+    {
+        Console.WriteLine("Input the cypher text in hex: ");
+        string cypherText = Console.ReadLine();
+        Console.WriteLine("Input the S hex key: ");
+        string key = Console.ReadLine();
+        string plainText = AES.DecryptHexStringWithAES(cypherText, key);
+        Console.WriteLine("Plain text: ");
+        Console.WriteLine(plainText);
     }
 
     private static void PrintOptions()
@@ -77,6 +91,7 @@ class Program
         Console.WriteLine("0 - Generate 'A' value");
         Console.WriteLine("1 - Calculate 'V' value");
         Console.WriteLine("2 - Calculate 'S' value");
+        Console.WriteLine("3 - Decrypt with AES");
     }
 
 }
