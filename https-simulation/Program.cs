@@ -67,7 +67,8 @@ class Program
         Console.WriteLine("Input the BigInteger 'V' value: ");
         BigInteger V = BigInteger.Parse(Console.ReadLine());
         byte[] result = SHA.CalculateS(V);
-        Console.WriteLine(String.Join("", result));
+        Console.WriteLine("Hex representation of S (16 bytes): ");
+        Console.WriteLine(String.Join("", result.Select(item => item.ToString("X")).ToArray()));
     }
 
     private static void PrintOptions()

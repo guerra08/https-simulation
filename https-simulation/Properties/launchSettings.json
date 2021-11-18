@@ -1,7 +1,8 @@
 {
   "profiles": {
     "https-simulation": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "2"
     }
   }
 }
