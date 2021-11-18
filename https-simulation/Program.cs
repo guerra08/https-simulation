@@ -1,2 +1,3 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using https_simulation.diffie_hellman;
+
+Console.WriteLine(DiffieHellman.Generate_A());
