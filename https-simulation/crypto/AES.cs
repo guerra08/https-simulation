@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Security.Cryptography;
+using https_simulation.util;
 
 namespace https_simulation.crypto
 {
@@ -11,42 +8,32 @@ namespace https_simulation.crypto
     {
 
         /// <summary>
-        /// Decrypts a 
+        /// Decrypts a message using AES
         /// </summary>
-        /// <param name="hexString"></param>
+        /// <param name="hexMessage"></param>
         /// <param name="hexKey"></param>
-        /// <returns></returns>
-        public static string DecryptHexStringWithAES(string hexString, string hexKey)
+        /// <returns><strong>String plain text messsage</strong></returns>
+        public static byte[] DecryptHexStringWithAES(string hexMessage, string hexKey)
         {
-            string plainText = null;
-            byte[] strBytes = Enumerable.Range(0, hexString.Length)
-                     .Where(x => x % 2 == 0)
-                     .Select(x => Convert.ToByte(hexString.Substring(x, 2), 16))
-                     .ToArray();
-            byte[] keyBytes = Enumerable.Range(0, hexKey.Length)
-                     .Where(x => x % 2 == 0)
-                     .Select(x => Convert.ToByte(hexKey.Substring(x, 2), 16))
-                     .ToArray();
-            byte[] cypherText = strBytes[16..^0];
-            byte[] IV = strBytes[0..16];
+            byte[] decryptedBytes = null;
+            byte[] messageBytes = Conversor.HexStringToByteArray(hexMessage);
+            byte[] keyBytes = Conversor.HexStringToByteArray(hexKey);
+            byte[] dataBytes = messageBytes[16..messageBytes.Length];
+            byte[] IV = messageBytes[0..16];
             using (Aes aes = Aes.Create())
             {
                 aes.Mode = CipherMode.CBC;
                 aes.Key = keyBytes;
                 aes.IV = IV;
                 ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-                using (MemoryStream msDecrypt = new (cypherText))
+                using MemoryStream msDecrypt = new(dataBytes);
+                using (CryptoStream csDecrypt = new(msDecrypt, decryptor, CryptoStreamMode.Write))
                 {
-                    using (CryptoStream csDecrypt = new (msDecrypt, decryptor, CryptoStreamMode.Read))
-                    {
-                        using (StreamReader srDecrypt = new (csDecrypt))
-                        {
-                            plainText = srDecrypt.ReadToEnd();
-                        }
-                    }
+                    csDecrypt.Write(dataBytes, 0, dataBytes.Length);
                 }
+                decryptedBytes = msDecrypt.ToArray();
             }
-            return plainText;
+            return decryptedBytes;
         }
 
     }

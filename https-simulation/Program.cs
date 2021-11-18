@@ -1,10 +1,14 @@
 ﻿using System.Numerics;
-
+using System.Globalization;
 using https_simulation.diffie_hellman;
 using https_simulation.crypto;
 
 class Program
 {
+    /// <summary>
+    /// Bruno Guerra - HTTPS simulation
+    /// </summary>
+    /// <param name="args"></param>
     static void Main(string[] args)
     {
         Console.WriteLine("HTTPS Simulation - Bruno Guerra");
@@ -35,6 +39,9 @@ class Program
         }
     }
 
+    /// <summary>
+    /// Wrapper to calculate the 'V' value
+    /// </summary>
     private static void CalculateVWrapper()
     {
         try
@@ -54,6 +61,9 @@ class Program
         
     }
 
+    /// <summary>
+    /// Wrapper to generate 'A' value
+    /// </summary>
     private static void GenerateAWrapper()
     {
         BigInteger a = DiffieHellman.Generate_a();
@@ -65,26 +75,37 @@ class Program
         Console.WriteLine(A.ToString("X2"));
     }
 
+    /// <summary>
+    /// Wrapper to generate 'S' value
+    /// </summary>
     private static void CalculateSWrapper()
     {
         Console.WriteLine("Input the BigInteger 'V' value: ");
         BigInteger V = BigInteger.Parse(Console.ReadLine());
         byte[] result = SHA.CalculateS(V);
+        Console.WriteLine("Raw S: ");
+        Console.WriteLine(String.Join("", result));
         Console.WriteLine("Hex representation of S (16 bytes): ");
         Console.WriteLine(String.Join("", result.Select(item => item.ToString("X2")).ToArray()));
     }
 
+    /// <summary>
+    /// Wrapper to decrypt a message with AES
+    /// </summary>
     private static void DecryptWithAESWrapper()
     {
         Console.WriteLine("Input the cypher text in hex: ");
         string cypherText = Console.ReadLine();
         Console.WriteLine("Input the S hex key: ");
         string key = Console.ReadLine();
-        string plainText = AES.DecryptHexStringWithAES(cypherText, key);
+        byte[] decrypted = AES.DecryptHexStringWithAES(cypherText, key);
         Console.WriteLine("Plain text: ");
-        Console.WriteLine(plainText);
+        Console.WriteLine(String.Join("", decrypted.Select(item => Convert.ToChar(item, new CultureInfo("pt-BR")))));
     }
 
+    /// <summary>
+    /// Prints the program options
+    /// </summary>
     private static void PrintOptions()
     {
         Console.WriteLine("Use one of the following number as argument to execute an action: ");
