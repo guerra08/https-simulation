@@ -30,6 +30,9 @@ class Program
                 CalculateSWrapper();
                 break;
             case "3":
+                EncryptWithAESWrapper();
+                break;
+            case "4":
                 DecryptWithAESWrapper();
                 break;
             default:
@@ -47,9 +50,9 @@ class Program
         try
         {
             Console.WriteLine("Input the hex value of 'B': ");
-            BigInteger B = BigInteger.Parse(Console.ReadLine(), System.Globalization.NumberStyles.HexNumber);
+            BigInteger B = BigInteger.Parse(Console.ReadLine(), NumberStyles.HexNumber);
             Console.WriteLine("Input the hex value of 'a': ");
-            BigInteger a = BigInteger.Parse(Console.ReadLine(), System.Globalization.NumberStyles.HexNumber);
+            BigInteger a = BigInteger.Parse(Console.ReadLine(), NumberStyles.HexNumber);
             BigInteger V = DiffieHellman.Calculate_V(B, a);
             Console.WriteLine("'V' value: ");
             Console.WriteLine(V);
@@ -86,7 +89,7 @@ class Program
         Console.WriteLine("Raw S: ");
         Console.WriteLine(String.Join("", result));
         Console.WriteLine("Hex representation of S (16 bytes): ");
-        Console.WriteLine(String.Join("", result.Select(item => item.ToString("X2")).ToArray()));
+        Console.WriteLine(String.Join("", result.Select(item => item.ToString("X2"))));
     }
 
     /// <summary>
@@ -101,6 +104,20 @@ class Program
         byte[] decrypted = AES.DecryptHexStringWithAES(cypherText, key);
         Console.WriteLine("Plain text: ");
         Console.WriteLine(String.Join("", decrypted.Select(item => Convert.ToChar(item, new CultureInfo("pt-BR")))));
+    }
+
+    /// <summary>
+    /// Wrapper to decrypt a message with AES
+    /// </summary>
+    private static void EncryptWithAESWrapper()
+    {
+        Console.WriteLine("Input the text to be encrypted: ");
+        string plainText = Console.ReadLine();
+        Console.WriteLine("Input the S hex key: ");
+        string key = Console.ReadLine();
+        byte[] encrypted = AES.EncryptPlainTextWithAES(plainText, key);
+        Console.WriteLine("Encrypted text: ");
+        Console.WriteLine(String.Join("", encrypted.Select(item => item.ToString("X2"))));
     }
 
     /// <summary>
