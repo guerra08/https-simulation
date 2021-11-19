@@ -52,11 +52,11 @@ class Program
 
         Console.WriteLine("Input the hex value of 'B': ");
         string BStr = Console.ReadLine();
-        StringValidationMiddleware(String.IsNullOrEmpty, BStr, "The 'B' hex value cannot be empty");
+        StrValidationMiddleware(BStr, "The 'B' hex value cannot be empty");
 
         Console.WriteLine("Input the hex value of 'a': ");
         string aStr = Console.ReadLine();
-        StringValidationMiddleware(String.IsNullOrEmpty, aStr, "The 'a' hex value cannot be empty");
+        StrValidationMiddleware(aStr, "The 'a' hex value cannot be empty");
 
         try
         {
@@ -98,7 +98,7 @@ class Program
 
         Console.WriteLine("Input the BigInteger 'V' value: ");
         string VInput = Console.ReadLine();
-        StringValidationMiddleware(String.IsNullOrEmpty, VInput, "The 'V' value cannot be empty");
+        StrValidationMiddleware(VInput, "The 'V' value cannot be empty");
 
         try
         {
@@ -126,11 +126,11 @@ class Program
 
         Console.WriteLine("Input the cypher text in hex: ");
         string cypherText = Console.ReadLine();
-        StringValidationMiddleware(String.IsNullOrEmpty, cypherText, "The cypher text cannot be empty");
+        StrValidationMiddleware(cypherText, "The cypher text cannot be empty");
 
         Console.WriteLine("Input the S hex key: ");
         string key = Console.ReadLine();
-        StringValidationMiddleware(String.IsNullOrEmpty, key, "The text cannot be empty");
+        StrValidationMiddleware(key, "The text cannot be empty");
 
         try
         {
@@ -155,11 +155,11 @@ class Program
 
         Console.WriteLine("Input the text to be encrypted: ");
         string plainText = Console.ReadLine();
-        StringValidationMiddleware(String.IsNullOrEmpty, plainText, "The text cannot be empty");
+        StrValidationMiddleware(plainText, "The text cannot be empty");
 
         Console.WriteLine("Input the S hex key: ");
         string key = Console.ReadLine();
-        StringValidationMiddleware(String.IsNullOrEmpty, key, "The key cannot be empty");
+        StrValidationMiddleware(key, "The key cannot be empty");
 
         try
         {
@@ -189,20 +189,20 @@ class Program
     }
 
     /// <summary>
-    /// Applies a middleware to a string and exits the application with code 1 if it fails
+    /// Middleware to a string and exits the application with code 1 if it fails
     /// </summary>
-    /// <param name="middleware"></param>
     /// <param name="toValidate"></param>
-    /// <param name="message"></param>
-    private static void StringValidationMiddleware
-        (Func<string, bool> middleware, string toValidate, string message)
+    /// <param name="errorMessage"></param>
+
+    private static Action<string, string> StrValidationMiddleware = (toValidate, errorMessage) =>
     {
-        if (!middleware(toValidate)) 
+        if (String.IsNullOrEmpty(toValidate))
         {
-            Console.WriteLine(message);
+            Console.WriteLine(errorMessage);
             Environment.Exit(1);
         }
-    }
+    };
+
 
 }
 
