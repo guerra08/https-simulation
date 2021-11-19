@@ -1,6 +1,4 @@
 ﻿using System.Security.Cryptography;
-using System.IO;
-using System.Text;
 using https_simulation.util;
 
 namespace https_simulation.crypto

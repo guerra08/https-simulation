@@ -11,6 +11,7 @@ class Program
     /// <param name="args"></param>
     static void Main(string[] args)
     {
+        Console.OutputEncoding = System.Text.Encoding.UTF8;
         Console.WriteLine("HTTPS Simulation - Bruno Guerra");
         if (args.Length == 0)
         {
@@ -49,6 +50,7 @@ class Program
     {
         try
         {
+            Console.WriteLine("Calculating 'V' value");
             Console.WriteLine("Input the hex value of 'B': ");
             BigInteger B = BigInteger.Parse(Console.ReadLine(), NumberStyles.HexNumber);
             Console.WriteLine("Input the hex value of 'a': ");
@@ -69,6 +71,7 @@ class Program
     /// </summary>
     private static void GenerateAWrapper()
     {
+        Console.WriteLine("Generating 'A' value");
         BigInteger a = DiffieHellman.Generate_a();
         Console.WriteLine("Hex representation of 'a'");
         Console.WriteLine(a.ToString("X2"));
@@ -83,6 +86,7 @@ class Program
     /// </summary>
     private static void CalculateSWrapper()
     {
+        Console.WriteLine("Calculating 'S' value");
         Console.WriteLine("Input the BigInteger 'V' value: ");
         BigInteger V = BigInteger.Parse(Console.ReadLine());
         byte[] result = SHA.CalculateS(V);
@@ -97,6 +101,7 @@ class Program
     /// </summary>
     private static void DecryptWithAESWrapper()
     {
+        Console.WriteLine("Decrypting message with AES");
         Console.WriteLine("Input the cypher text in hex: ");
         string cypherText = Console.ReadLine();
         Console.WriteLine("Input the S hex key: ");
@@ -111,6 +116,7 @@ class Program
     /// </summary>
     private static void EncryptWithAESWrapper()
     {
+        Console.WriteLine("Encrypting message with AES");
         Console.WriteLine("Input the text to be encrypted: ");
         string plainText = Console.ReadLine();
         Console.WriteLine("Input the S hex key: ");
@@ -129,7 +135,8 @@ class Program
         Console.WriteLine("0 - Generate 'A' value");
         Console.WriteLine("1 - Calculate 'V' value");
         Console.WriteLine("2 - Calculate 'S' value");
-        Console.WriteLine("3 - Decrypt with AES");
+        Console.WriteLine("3 - Encrypt with AES");
+        Console.WriteLine("4 - Decrypt with AES");
     }
 
 }
