@@ -45,7 +45,7 @@ namespace https_simulation.crypto
         /// <returns><strong>byte array</strong></returns>
         public static byte[] EncryptPlainTextWithAES(string plainText, string hexKey)
         {
-            byte[] encryptedBytes = null;
+            byte[] encryptedBytes;
             byte[] keyBytes = Conversor.HexStringToByteArray(hexKey);
             byte[] IV = Generator.GenerateByteArray();
             using (Aes aes = Aes.Create())
@@ -62,7 +62,7 @@ namespace https_simulation.crypto
                 }
                 encryptedBytes = msEncrypt.ToArray();
             }
-            return encryptedBytes;
+            return IV.Concat(encryptedBytes).ToArray();
         }
 
     }
