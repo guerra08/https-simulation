@@ -3,6 +3,9 @@ using System.Security.Cryptography;
 
 namespace https_simulation.crypto
 {
+    /// <summary>
+    /// SHA helper class
+    /// </summary>
     internal class SHA
     {
         /// <summary>

@@ -1,5 +1,8 @@
 ﻿namespace https_simulation.util
 {
+    /// <summary>
+    /// Helper class to convert data
+    /// </summary>
     internal class Conversor
     {
         /// <summary>

@@ -88,12 +88,30 @@ class Program
     {
         Console.WriteLine("Calculating 'S' value");
         Console.WriteLine("Input the BigInteger 'V' value: ");
-        BigInteger V = BigInteger.Parse(Console.ReadLine());
-        byte[] result = SHA.CalculateS(V);
-        Console.WriteLine("Raw S: ");
-        Console.WriteLine(String.Join("", result));
-        Console.WriteLine("Hex representation of S (16 bytes): ");
-        Console.WriteLine(String.Join("", result.Select(item => item.ToString("X2"))));
+        string VInput = Console.ReadLine();
+        if (String.IsNullOrEmpty(VInput)) 
+        {
+            Console.WriteLine("The value for 'V' cannot be empty");
+            Environment.Exit(1);
+        }
+        else
+        {
+            try
+            {
+                BigInteger V = BigInteger.Parse(VInput);
+                byte[] result = SHA.CalculateS(V);
+                Console.WriteLine("Raw S: ");
+                Console.WriteLine(String.Join("", result));
+                Console.WriteLine("Hex representation of S (16 bytes): ");
+                Console.WriteLine(String.Join("", result.Select(item => item.ToString("X2"))));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Environment.Exit(1);
+            }
+        }
+        
     }
 
     /// <summary>
@@ -104,11 +122,30 @@ class Program
         Console.WriteLine("Decrypting message with AES");
         Console.WriteLine("Input the cypher text in hex: ");
         string cypherText = Console.ReadLine();
+        if(String.IsNullOrEmpty(cypherText))
+        {
+            Console.WriteLine("The cypher text cannot be empty");
+            Environment.Exit(1);
+        }
         Console.WriteLine("Input the S hex key: ");
         string key = Console.ReadLine();
-        byte[] decrypted = AES.DecryptHexStringWithAES(cypherText, key);
-        Console.WriteLine("Plain text: ");
-        Console.WriteLine(String.Join("", decrypted.Select(item => Convert.ToChar(item, new CultureInfo("pt-BR")))));
+        if (String.IsNullOrEmpty(key))
+        {
+            Console.WriteLine("The key cannot be empty");
+            Environment.Exit(1);
+        }
+        try
+        {
+            byte[] decrypted = AES.DecryptHexStringWithAES(cypherText, key);
+            Console.WriteLine("Plain text: ");
+            Console.WriteLine(String.Join("", decrypted.Select(item => Convert.ToChar(item, new CultureInfo("pt-BR")))));
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            Environment.Exit(1);
+        }
+        
     }
 
     /// <summary>
@@ -119,11 +156,30 @@ class Program
         Console.WriteLine("Encrypting message with AES");
         Console.WriteLine("Input the text to be encrypted: ");
         string plainText = Console.ReadLine();
+        if (String.IsNullOrEmpty(plainText))
+        {
+            Console.WriteLine("The text cannot be empty");
+            Environment.Exit(1);
+        }
         Console.WriteLine("Input the S hex key: ");
         string key = Console.ReadLine();
-        byte[] encrypted = AES.EncryptPlainTextWithAES(plainText, key);
-        Console.WriteLine("Encrypted text: ");
-        Console.WriteLine(String.Join("", encrypted.Select(item => item.ToString("X2"))));
+        if (String.IsNullOrEmpty(key))
+        {
+            Console.WriteLine("The hex key cannot be empty");
+            Environment.Exit(1);
+        }
+        try
+        {
+            byte[] encrypted = AES.EncryptPlainTextWithAES(plainText, key);
+            Console.WriteLine("Encrypted text: ");
+            Console.WriteLine(String.Join("", encrypted.Select(item => item.ToString("X2"))));
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            Environment.Exit(1);
+        }
+        
     }
 
     /// <summary>

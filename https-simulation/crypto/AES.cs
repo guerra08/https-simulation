@@ -3,6 +3,9 @@ using https_simulation.util;
 
 namespace https_simulation.crypto
 {
+    /// <summary>
+    /// Helper class to use AES algorithm
+    /// </summary>
     internal class AES
     {
 

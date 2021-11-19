@@ -1,6 +1,9 @@
 ﻿using System.Numerics;
 namespace https_simulation.util
 {
+    /// <summary>
+    /// Class to help with the generation of specific values and structures
+    /// </summary>
     internal class Generator
     {
         /// <summary>
