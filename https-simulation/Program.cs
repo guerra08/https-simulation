@@ -48,20 +48,28 @@ class Program
     /// </summary>
     private static void CalculateVWrapper()
     {
+        Console.WriteLine("Calculating 'V' value");
+
+        Console.WriteLine("Input the hex value of 'B': ");
+        string BStr = Console.ReadLine();
+        StringValidationMiddleware(String.IsNullOrEmpty, BStr, "The 'B' hex value cannot be empty");
+
+        Console.WriteLine("Input the hex value of 'a': ");
+        string aStr = Console.ReadLine();
+        StringValidationMiddleware(String.IsNullOrEmpty, aStr, "The 'a' hex value cannot be empty");
+
         try
         {
-            Console.WriteLine("Calculating 'V' value");
-            Console.WriteLine("Input the hex value of 'B': ");
             BigInteger B = BigInteger.Parse(Console.ReadLine(), NumberStyles.HexNumber);
-            Console.WriteLine("Input the hex value of 'a': ");
             BigInteger a = BigInteger.Parse(Console.ReadLine(), NumberStyles.HexNumber);
             BigInteger V = DiffieHellman.Calculate_V(B, a);
             Console.WriteLine("'V' value: ");
             Console.WriteLine(V);
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
-            Console.WriteLine("Error when calculating 'V' value.");
             Console.WriteLine(ex.Message);
+            Environment.Exit(1);
         }
         
     }
@@ -87,29 +95,24 @@ class Program
     private static void CalculateSWrapper()
     {
         Console.WriteLine("Calculating 'S' value");
+
         Console.WriteLine("Input the BigInteger 'V' value: ");
         string VInput = Console.ReadLine();
-        if (String.IsNullOrEmpty(VInput)) 
+        StringValidationMiddleware(String.IsNullOrEmpty, VInput, "The 'V' value cannot be empty");
+
+        try
         {
-            Console.WriteLine("The value for 'V' cannot be empty");
-            Environment.Exit(1);
+            BigInteger V = BigInteger.Parse(VInput);
+            byte[] result = SHA.CalculateS(V);
+            Console.WriteLine("Raw S: ");
+            Console.WriteLine(String.Join("", result));
+            Console.WriteLine("Hex representation of S (16 bytes): ");
+            Console.WriteLine(String.Join("", result.Select(item => item.ToString("X2"))));
         }
-        else
+        catch (Exception ex)
         {
-            try
-            {
-                BigInteger V = BigInteger.Parse(VInput);
-                byte[] result = SHA.CalculateS(V);
-                Console.WriteLine("Raw S: ");
-                Console.WriteLine(String.Join("", result));
-                Console.WriteLine("Hex representation of S (16 bytes): ");
-                Console.WriteLine(String.Join("", result.Select(item => item.ToString("X2"))));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Environment.Exit(1);
-            }
+            Console.WriteLine(ex.Message);
+            Environment.Exit(1);
         }
         
     }
@@ -120,20 +123,15 @@ class Program
     private static void DecryptWithAESWrapper()
     {
         Console.WriteLine("Decrypting message with AES");
+
         Console.WriteLine("Input the cypher text in hex: ");
         string cypherText = Console.ReadLine();
-        if(String.IsNullOrEmpty(cypherText))
-        {
-            Console.WriteLine("The cypher text cannot be empty");
-            Environment.Exit(1);
-        }
+        StringValidationMiddleware(String.IsNullOrEmpty, cypherText, "The cypher text cannot be empty");
+
         Console.WriteLine("Input the S hex key: ");
         string key = Console.ReadLine();
-        if (String.IsNullOrEmpty(key))
-        {
-            Console.WriteLine("The key cannot be empty");
-            Environment.Exit(1);
-        }
+        StringValidationMiddleware(String.IsNullOrEmpty, key, "The text cannot be empty");
+
         try
         {
             byte[] decrypted = AES.DecryptHexStringWithAES(cypherText, key);
@@ -154,20 +152,15 @@ class Program
     private static void EncryptWithAESWrapper()
     {
         Console.WriteLine("Encrypting message with AES");
+
         Console.WriteLine("Input the text to be encrypted: ");
         string plainText = Console.ReadLine();
-        if (String.IsNullOrEmpty(plainText))
-        {
-            Console.WriteLine("The text cannot be empty");
-            Environment.Exit(1);
-        }
+        StringValidationMiddleware(String.IsNullOrEmpty, plainText, "The text cannot be empty");
+
         Console.WriteLine("Input the S hex key: ");
         string key = Console.ReadLine();
-        if (String.IsNullOrEmpty(key))
-        {
-            Console.WriteLine("The hex key cannot be empty");
-            Environment.Exit(1);
-        }
+        StringValidationMiddleware(String.IsNullOrEmpty, key, "The key cannot be empty");
+
         try
         {
             byte[] encrypted = AES.EncryptPlainTextWithAES(plainText, key);
@@ -193,6 +186,22 @@ class Program
         Console.WriteLine("2 - Calculate 'S' value");
         Console.WriteLine("3 - Encrypt with AES");
         Console.WriteLine("4 - Decrypt with AES");
+    }
+
+    /// <summary>
+    /// Applies a middleware to a string and exits the application with code 1 if it fails
+    /// </summary>
+    /// <param name="middleware"></param>
+    /// <param name="toValidate"></param>
+    /// <param name="message"></param>
+    private static void StringValidationMiddleware
+        (Func<string, bool> middleware, string toValidate, string message)
+    {
+        if (!middleware(toValidate)) 
+        {
+            Console.WriteLine(message);
+            Environment.Exit(1);
+        }
     }
 
 }
