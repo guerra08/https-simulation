@@ -15,9 +15,9 @@ namespace https_simulation.crypto
         /// <returns><strong>byte array of computed bytes</strong></returns>
         public static byte[] CalculateS(BigInteger V, int takeSize = 16)
         {
-            SHA256 sha256 = SHA256.Create();
-            byte[] VByteArray = V.ToByteArray(false, true);
-            byte[] hashArray = sha256.ComputeHash(VByteArray).ToArray();
+            var sha256 = SHA256.Create();
+            var vByteArray = V.ToByteArray(false, true);
+            var hashArray = sha256.ComputeHash(vByteArray).ToArray();
             return hashArray[0..takeSize];
         }
 

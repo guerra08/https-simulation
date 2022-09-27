@@ -17,25 +17,23 @@ namespace https_simulation.crypto
         /// <returns><strong>String plain text messsage</strong></returns>
         public static byte[] DecryptHexStringWithAES(string hexMessage, string hexKey)
         {
-            byte[] decryptedBytes = null;
-            byte[] messageBytes = Conversor.HexStringToByteArray(hexMessage);
-            byte[] keyBytes = Conversor.HexStringToByteArray(hexKey);
-            byte[] dataBytes = messageBytes[16..messageBytes.Length];
-            byte[] IV = messageBytes[0..16];
-            using (Aes aes = Aes.Create())
+            var messageBytes = Conversor.HexStringToByteArray(hexMessage);
+            var keyBytes = Conversor.HexStringToByteArray(hexKey);
+            var dataBytes = messageBytes[16..messageBytes.Length];
+            var iv = messageBytes[..16];
+            
+            using var aes = Aes.Create();
+            aes.Mode = CipherMode.CBC;
+            aes.Key = keyBytes;
+            aes.IV = iv;
+            
+            var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+            using MemoryStream msDecrypt = new();
+            using (CryptoStream csDecrypt = new(msDecrypt, decryptor, CryptoStreamMode.Write))
             {
-                aes.Mode = CipherMode.CBC;
-                aes.Key = keyBytes;
-                aes.IV = IV;
-                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-                using MemoryStream msDecrypt = new();
-                using (CryptoStream csDecrypt = new(msDecrypt, decryptor, CryptoStreamMode.Write))
-                {
-                    csDecrypt.Write(dataBytes, 0, dataBytes.Length);
-                }
-                decryptedBytes = msDecrypt.ToArray();
+                csDecrypt.Write(dataBytes, 0, dataBytes.Length);
             }
-            return decryptedBytes;
+            return msDecrypt.ToArray();
         }
 
         /// <summary>
@@ -46,24 +44,22 @@ namespace https_simulation.crypto
         /// <returns><strong>byte array</strong></returns>
         public static byte[] EncryptPlainTextWithAES(string plainText, string hexKey)
         {
-            byte[] encryptedBytes;
-            byte[] keyBytes = Conversor.HexStringToByteArray(hexKey);
-            byte[] IV = Generator.GenerateByteArray();
-            using (Aes aes = Aes.Create())
+            var keyBytes = Conversor.HexStringToByteArray(hexKey);
+            var iv = Generator.GenerateByteArray();
+            using (var aes = Aes.Create())
             {
                 aes.Mode = CipherMode.CBC;
                 aes.Key = keyBytes;
-                aes.IV = IV;
-                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+                aes.IV = iv;
+                var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
                 using MemoryStream msEncrypt = new();
                 using (CryptoStream csEncrypt = new(msEncrypt, encryptor, CryptoStreamMode.Write))
                 using (StreamWriter swEncrypt = new(csEncrypt))
                 {
                     swEncrypt.Write(plainText);
                 }
-                encryptedBytes = msEncrypt.ToArray();
+                return iv.Concat(msEncrypt.ToArray()).ToArray();
             }
-            return IV.Concat(encryptedBytes).ToArray();
         }
 
     }

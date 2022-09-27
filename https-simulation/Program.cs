@@ -21,7 +21,7 @@ class Program
     /// Plain text: Legal. Se deu tudo certo conseguirÃ¡s ler esta mensagem. Inverte ela, cifra, e me envia de volta.
     /// </summary>
     /// <param name="args"></param>
-    static void Main(string[] args)
+    public static void Main(string[] args)
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
         Console.WriteLine("HTTPS Simulation - Bruno Guerra");
@@ -30,7 +30,7 @@ class Program
             PrintOptions();
             return;
         }
-        string mode = args[0];
+        var mode = args[0];
         switch (mode)
         {
             case "0":
@@ -63,20 +63,23 @@ class Program
         Console.WriteLine("Calculating 'V' value");
 
         Console.WriteLine("Input the hex value of 'B': ");
-        string BStr = Console.ReadLine();
-        StrValidationMiddleware(BStr, "The 'B' hex value cannot be empty");
+        var bStr = Console.ReadLine();
 
         Console.WriteLine("Input the hex value of 'a': ");
-        string aStr = Console.ReadLine();
-        StrValidationMiddleware(aStr, "The 'a' hex value cannot be empty");
+        var aStr = Console.ReadLine();
+
+        if (string.IsNullOrEmpty(aStr) || string.IsNullOrEmpty(bStr))
+        {
+            Console.WriteLine("Invalid inputs");
+            Environment.Exit(1);
+        }
 
         try
         {
-            BigInteger B = BigInteger.Parse(Console.ReadLine(), NumberStyles.HexNumber);
-            BigInteger a = BigInteger.Parse(Console.ReadLine(), NumberStyles.HexNumber);
-            BigInteger V = DiffieHellman.Calculate_V(B, a);
-            Console.WriteLine("'V' value: ");
-            Console.WriteLine(V);
+            var b = BigInteger.Parse(bStr, NumberStyles.HexNumber);
+            var a = BigInteger.Parse(aStr, NumberStyles.HexNumber);
+            var v = DiffieHellman.Calculate_V(b, a);
+            Console.WriteLine($"'V' value: {v}");
         }
         catch (Exception ex)
         {
@@ -92,13 +95,14 @@ class Program
     private static void GenerateAWrapper()
     {
         Console.WriteLine("Generating 'A' value");
-        BigInteger a = DiffieHellman.Generate_a();
+        var a = DiffieHellman.Generate_a();
+        
         Console.WriteLine("Hex representation of 'a'");
         Console.WriteLine(a.ToString("X2"));
 
-        BigInteger A = DiffieHellman.Generate_A(a);
+        var aUpper = DiffieHellman.Generate_A(a);
         Console.WriteLine("Hex representation of 'A'");
-        Console.WriteLine(A.ToString("X2"));
+        Console.WriteLine(aUpper.ToString("X2"));
     }
 
     /// <summary>
@@ -109,17 +113,22 @@ class Program
         Console.WriteLine("Calculating 'S' value");
 
         Console.WriteLine("Input the BigInteger 'V' value: ");
-        string VInput = Console.ReadLine();
-        StrValidationMiddleware(VInput, "The 'V' value cannot be empty");
+        var vInput = Console.ReadLine();
+
+        if (string.IsNullOrEmpty(vInput))
+        {
+            Console.WriteLine("Invalid input for V");
+            Environment.Exit(1);
+        }
 
         try
         {
-            BigInteger V = BigInteger.Parse(VInput);
-            byte[] result = SHA.CalculateS(V);
+            var v = BigInteger.Parse(vInput);
+            var result = SHA.CalculateS(v);
             Console.WriteLine("Raw S: ");
-            Console.WriteLine(String.Join("", result));
+            Console.WriteLine(string.Join("", result));
             Console.WriteLine("Hex representation of S (16 bytes): ");
-            Console.WriteLine(String.Join("", result.Select(item => item.ToString("X2"))));
+            Console.WriteLine(string.Join("", result.Select(item => item.ToString("X2"))));
         }
         catch (Exception ex)
         {
@@ -137,18 +146,22 @@ class Program
         Console.WriteLine("Decrypting message with AES");
 
         Console.WriteLine("Input the cypher text in hex: ");
-        string cypherText = Console.ReadLine();
-        StrValidationMiddleware(cypherText, "The cypher text cannot be empty");
+        var cypherText = Console.ReadLine();
 
         Console.WriteLine("Input the S hex key: ");
-        string key = Console.ReadLine();
-        StrValidationMiddleware(key, "The text cannot be empty");
+        var key = Console.ReadLine();
+
+        if (string.IsNullOrEmpty(cypherText) || string.IsNullOrEmpty(key))
+        {
+            Console.WriteLine("Invalid input.");
+            Environment.Exit(1);
+        }
 
         try
         {
-            byte[] decrypted = AES.DecryptHexStringWithAES(cypherText, key);
+            var decrypted = AES.DecryptHexStringWithAES(cypherText, key);
             Console.WriteLine("Plain text: ");
-            Console.WriteLine(String.Join("", decrypted.Select(item => Convert.ToChar(item, new CultureInfo("pt-BR")))));
+            Console.WriteLine(string.Join("", decrypted.Select(item => Convert.ToChar(item, new CultureInfo("pt-BR")))));
         }
         catch(Exception ex)
         {
@@ -166,18 +179,22 @@ class Program
         Console.WriteLine("Encrypting message with AES");
 
         Console.WriteLine("Input the text to be encrypted: ");
-        string plainText = Console.ReadLine();
-        StrValidationMiddleware(plainText, "The text cannot be empty");
+        var plainText = Console.ReadLine();
 
         Console.WriteLine("Input the S hex key: ");
-        string key = Console.ReadLine();
-        StrValidationMiddleware(key, "The key cannot be empty");
+        var key = Console.ReadLine();
+        
+        if (string.IsNullOrEmpty(plainText) || string.IsNullOrEmpty(key))
+        {
+            Console.WriteLine("Invalid input.");
+            Environment.Exit(1);
+        }
 
         try
         {
-            byte[] encrypted = AES.EncryptPlainTextWithAES(plainText, key);
+            var encrypted = AES.EncryptPlainTextWithAES(plainText, key);
             Console.WriteLine("Encrypted text: ");
-            Console.WriteLine(String.Join("", encrypted.Select(item => item.ToString("X2"))));
+            Console.WriteLine(string.Join("", encrypted.Select(item => item.ToString("X2"))));
         }
         catch(Exception ex)
         {
@@ -199,22 +216,6 @@ class Program
         Console.WriteLine("3 - Encrypt with AES");
         Console.WriteLine("4 - Decrypt with AES");
     }
-
-    /// <summary>
-    /// Middleware to a string and exits the application with code 1 if it fails
-    /// </summary>
-    /// <param name="toValidate"></param>
-    /// <param name="errorMessage"></param>
-
-    private static Action<string, string> StrValidationMiddleware = (toValidate, errorMessage) =>
-    {
-        if (String.IsNullOrEmpty(toValidate))
-        {
-            Console.WriteLine(errorMessage);
-            Environment.Exit(1);
-        }
-    };
-
 
 }
 

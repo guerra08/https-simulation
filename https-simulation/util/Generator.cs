@@ -13,8 +13,8 @@ namespace https_simulation.util
         /// <returns><strong>byte array</strong></returns>
         public static byte[] GenerateByteArray(int size = 16)
         {
-            Random rnd = new Random();
-            byte[] b = new byte[size];
+            var rnd = new Random();
+            var b = new byte[size];
             rnd.NextBytes(b);
             return b;
         }
@@ -26,8 +26,8 @@ namespace https_simulation.util
         /// <returns><strong>BigInteger generated number</strong></returns>
         public static BigInteger GenerateBigIntegerSmallerThan(int max)
         {
-            Random random = new Random();
-            byte[] data = new byte[max];
+            var random = new Random();
+            var data = new byte[max];
             random.NextBytes(data);
             return new BigInteger(data, true);
         }
