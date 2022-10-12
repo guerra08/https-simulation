@@ -3,6 +3,8 @@ using System.Globalization;
 using https_simulation.diffie_hellman;
 using https_simulation.crypto;
 
+namespace https_simulation;
+
 class Program
 {
     /// <summary>
@@ -24,7 +26,7 @@ class Program
     public static void Main(string[] args)
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
-        Console.WriteLine("HTTPS Simulation - Bruno Guerra");
+        Console.WriteLine("Bruno Guerra - HTTPS Simulation");
         if (args.Length == 0)
         {
             PrintOptions();
@@ -43,10 +45,10 @@ class Program
                 CalculateSWrapper();
                 break;
             case "3":
-                EncryptWithAESWrapper();
+                EncryptWithAesWrapper();
                 break;
             case "4":
-                DecryptWithAESWrapper();
+                DecryptWithAesWrapper();
                 break;
             default:
                 Console.WriteLine("Invalid option.");
@@ -124,7 +126,7 @@ class Program
         try
         {
             var v = BigInteger.Parse(vInput);
-            var result = SHA.CalculateS(v);
+            var result = Sha.CalculateS(v);
             Console.WriteLine("Raw S: ");
             Console.WriteLine(string.Join("", result));
             Console.WriteLine("Hex representation of S (16 bytes): ");
@@ -141,7 +143,7 @@ class Program
     /// <summary>
     /// Wrapper to decrypt a message with AES
     /// </summary>
-    private static void DecryptWithAESWrapper()
+    private static void DecryptWithAesWrapper()
     {
         Console.WriteLine("Decrypting message with AES");
 
@@ -159,7 +161,7 @@ class Program
 
         try
         {
-            var decrypted = AES.DecryptHexStringWithAES(cypherText, key);
+            var decrypted = Aes.DecryptHexStringWithAes(cypherText, key);
             Console.WriteLine("Plain text: ");
             Console.WriteLine(string.Join("", decrypted.Select(item => Convert.ToChar(item, new CultureInfo("pt-BR")))));
         }
@@ -174,7 +176,7 @@ class Program
     /// <summary>
     /// Wrapper to decrypt a message with AES
     /// </summary>
-    private static void EncryptWithAESWrapper()
+    private static void EncryptWithAesWrapper()
     {
         Console.WriteLine("Encrypting message with AES");
 
@@ -192,7 +194,7 @@ class Program
 
         try
         {
-            var encrypted = AES.EncryptPlainTextWithAES(plainText, key);
+            var encrypted = Aes.EncryptPlainTextWithAes(plainText, key);
             Console.WriteLine("Encrypted text: ");
             Console.WriteLine(string.Join("", encrypted.Select(item => item.ToString("X2"))));
         }
